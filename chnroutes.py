@@ -7,6 +7,15 @@ import argparse
 import math
 import textwrap
 
+def generate_ocserv(metric):
+    results = fetch_ip_data()  
+    rfile=open('routes.txt','w')
+    for ip,mask,_ in results:
+        route_item="route = %s/%s\n"%(ip,mask)
+        rfile.write(route_item)
+    rfile.close()
+    print "Usage: Append the content of the newly created routes.txt to your ocserv config file"
+
 
 def generate_ovpn(metric):
     results = fetch_ip_data()  
@@ -234,7 +243,7 @@ if __name__=='__main__':
                         dest='platform',
                         default='openvpn',
                         nargs='?',
-                        help="Target platforms, it can be openvpn, mac, linux," 
+                        help="Target platforms, it can be openvpn, ocserv, mac, linux," 
                         "win, android. openvpn by default.")
     parser.add_argument('-m','--metric',
                         dest='metric',
@@ -247,6 +256,8 @@ if __name__=='__main__':
     
     if args.platform.lower() == 'openvpn':
         generate_ovpn(args.metric)
+    elif args.platform.lower() == 'ocserv':
+        generate_ocserv(args.metric)
     elif args.platform.lower() == 'linux':
         generate_linux(args.metric)
     elif args.platform.lower() == 'mac':
